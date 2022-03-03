@@ -4,7 +4,9 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "github.com/JonsCodi/bava-go/cmd"
+import (
+	"github.com/JonsCodi/bava-go/cmd"
+)
 
 func main() {
 	cmd.Execute()

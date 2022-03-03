@@ -27,7 +27,9 @@ var lambdaCmd = &cobra.Command{
 		executeCommand := execute.New(bufio.NewReader(os.Stdin))
 
 		envFileContent := executeCommand.ExtractContent(envFlagValue)
-		fields := strings.Split(envFileContent, "=")
+		envFileContent = strings.Replace(envFileContent, "=''", "", -1)
+		fields := strings.Split(envFileContent, "\n")
+
 		//build folder and files
 		name := executeCommand.AskForInput("Project name? ")
 		product := executeCommand.AskForInput("Product name? ")
