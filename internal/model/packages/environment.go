@@ -7,7 +7,7 @@ var EnvPackageTemplate = template.Must(template.New("environment.go").
 
 type Environment struct {
 {{- range .EnvironmentFields }}
-	{{ . }} string env:"{{ . }}"
+	{{ . }} string env:"{{ . }}" //Need fix this...
 {{- end }}
 }
 `))
