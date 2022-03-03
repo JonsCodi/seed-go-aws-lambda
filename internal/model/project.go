@@ -7,15 +7,18 @@ import (
 )
 
 type Project struct {
-	Name        string
-	Product     string
-	Description string
+	Name              string
+	Product           string
+	Description       string
+	EnvironmentFields []string
 }
 
-func New(name, product string) Project {
+func New(name, product, description string, envFields []string) Project {
 	return Project{
-		Name:    name,
-		Product: product,
+		Name:              name,
+		Product:           product,
+		Description:       description,
+		EnvironmentFields: envFields,
 	}
 }
 
