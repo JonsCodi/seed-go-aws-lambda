@@ -30,36 +30,6 @@ const (
 	debugLevel = "debug"
 )
 
-func StartDatabaseConnection(env environment.Environment) (*gorm.DB, error) {
-	log.Info().Msg("Loading Database connection....")
-
-	sqltrace.Register("postgres", &pq.Driver{}, sqltrace.WithServiceName("{{ .Product}}-{{ .Name}}-psql"))
-	sqlDb, err := sqltrace.Open(
-		"postgres",
-		fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
-			env.DBUser,
-			env.DBPassword,
-			env.DBHost,
-			env.DBPort,
-			env.DBName,
-			env.DBSslMode,
-		),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	db, err := gormtrace.Open(postgres.New(postgres.Config{Conn: sqlDb}), &gorm.Config{})
-
-	if err != nil {
-		return nil, err
-	}
-
-	log.Info().Msg("Loading Database connection....Done")
-
-	return db, nil
-}
-
 func LoadZerologConfig() {
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
