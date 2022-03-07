@@ -2,18 +2,36 @@ package model
 
 import (
 	"fmt"
+	"github.com/iancoleman/strcase"
 	"io/fs"
 	"os"
+	"strings"
 )
+
+type EnvironmentField struct {
+	Attr string
+	Env  string
+}
 
 type Project struct {
 	Name              string
 	Product           string
 	Description       string
-	EnvironmentFields []string
+	EnvironmentFields []EnvironmentField
 }
 
-func New(name, product, description string, envFields []string) Project {
+func New(name, product, description string, envContentFile string) Project {
+	environmentFields := strings.Replace(envContentFile, "=''", "", -1)
+	fields := strings.Split(environmentFields, "\n")
+
+	envFields := make([]EnvironmentField, len(fields))
+	for i, e := range fields {
+		envFields[i] = EnvironmentField{
+			Attr: strcase.ToCamel(strings.ToLower(e)),
+			Env:  e,
+		}
+	}
+
 	return Project{
 		Name:              name,
 		Product:           product,

@@ -26,15 +26,11 @@ var lambdaCmd = &cobra.Command{
 		pkg.CheckErr(err)
 		executeCommand := execute.New(bufio.NewReader(os.Stdin))
 
-		envFileContent := executeCommand.ExtractContent(envFlagValue)
-		envFileContent = strings.Replace(envFileContent, "=''", "", -1)
-		fields := strings.Split(envFileContent, "\n")
-
 		//build folder and files
 		name := executeCommand.AskForInput("Project name? ")
 		product := executeCommand.AskForInput("Product name? ")
 		description := executeCommand.AskForInput("Any description about it? ")
-		project := model.New(name, product, description, fields)
+		project := model.New(name, product, description, executeCommand.ExtractContent(envFlagValue))
 
 		//1. structure packages folder.
 		if err := os.MkdirAll(fmt.Sprintf("./%s/internal", name), fs.ModePerm); err != nil {
@@ -57,10 +53,14 @@ var lambdaCmd = &cobra.Command{
 		configFile, err := os.Create(fmt.Sprintf("./%s/internal/config/config.go", name))
 		pkg.CheckErr(err)
 		defer configFile.Close()
+		modFile, err := os.Create(fmt.Sprintf("./%s/go.mod", name))
+		pkg.CheckErr(err)
+		defer modFile.Close()
 
 		check(packages.MainPackageTemplate.Execute(mainFile, project))
-		check(packages.EnvPackageTemplate.Execute(envFile, project))
+		check(packages.EnvPackageTemplate.ExecuteTemplate(envFile, "env.tmpl", project))
 		check(packages.ConfigPackageTemplate.Execute(configFile, project))
+		check(packages.GoModFileTemplate.Execute(modFile, project))
 	},
 }
 

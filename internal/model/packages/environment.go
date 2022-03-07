@@ -1,13 +1,17 @@
 package packages
 
-import "text/template"
+import (
+	"embed"
+	"github.com/JonsCodi/bava-go/pkg"
+	"text/template"
+)
 
-var EnvPackageTemplate = template.Must(template.New("environment.go").
-	Parse(`package environment
+//go:embed *.tmpl
+var tpls embed.FS
+var err error
+var EnvPackageTemplate *template.Template
 
-type Environment struct {
-{{- range .EnvironmentFields }}
-	{{ . }} string env:"{{ . }}" //Need fix this...
-{{- end }}
+func init() {
+	EnvPackageTemplate, err = template.ParseFS(tpls, "*")
+	pkg.CheckErr(err)
 }
-`))
