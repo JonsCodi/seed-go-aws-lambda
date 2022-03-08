@@ -18,9 +18,10 @@ type Project struct {
 	Product           string
 	Description       string
 	EnvironmentFields []EnvironmentField
+	kind              string
 }
 
-func New(name, product, description string, envContentFile string) Project {
+func New(name, product, description, kind, envContentFile string) Project {
 	environmentFields := strings.Replace(envContentFile, "=''", "", -1)
 	fields := strings.Split(environmentFields, "\n")
 
